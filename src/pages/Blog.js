@@ -9,8 +9,9 @@ import Article from "../components/Article";
 const Blog = () => {
   const [blogData, setBlogData] = useState([]);
   const [author, setAuthor] = useState("");
-  //   const [formData, setFormData] = [{ author: "", content: "", date: "" }];
+  const [content, setContent] = useState("");
   const [error, setError] = useState(false);
+  const [submit, setSubmit] = useState(false);
 
   const getData = () =>
     axios
@@ -22,7 +23,7 @@ const Blog = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (formContent.length < 100) {
+    if (content.length < 100) {
       setError(true);
     } else {
       axios.post("http://localhost:3004/articles", {
@@ -31,6 +32,11 @@ const Blog = () => {
         date: Date.now(),
       });
       setError(false);
+      setAuthor("");
+      setContent("");
+      setSubmit(true);
+      location.reload();
+      getData();
     }
   };
 
@@ -45,21 +51,25 @@ const Blog = () => {
           placeholder="Nom"
           id="subAuthor"
           onChange={(e) => setAuthor(e.target.value)}
+          value={author}
         />
         <textarea
           // style conditionnel
           style={{ border: error ? "1px solid red" : "1px solid #61dafb" }}
           placeholder="Message"
-          onChange={(e) => setFormContent(e.target.value)}
+          onChange={(e) => setContent(e.target.value)}
+          value={content}
         ></textarea>
         {/* if error = true */}
         {error && <p>Veuillez écrire un minimum de 100 carcatères</p>}
         <input type="submit" value="Envoyer" />
       </form>
       <ul>
-        {blogData.map((article) => (
-          <Article key={article.id} article={article} />
-        ))}
+        {blogData
+          .sort((a, b) => b.date - a.date)
+          .map((article) => (
+            <Article key={article.id} article={article} />
+          ))}
       </ul>
     </div>
   );
