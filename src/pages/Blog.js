@@ -11,6 +11,7 @@ const Blog = () => {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const [error, setError] = useState(false);
+  const [submit, setSubmit] = useState(false);
 
   const getData = () =>
     axios
