@@ -8,8 +8,8 @@ import Article from "../components/Article";
 
 const Blog = () => {
   const [blogData, setBlogData] = useState([]);
-  const [formContent, setFormContent] = useState("");
-  const [formData, setFormData] = [{ author: "", content: "", date: "" }];
+  const [author, setAuthor] = useState("");
+  //   const [formData, setFormData] = [{ author: "", content: "", date: "" }];
   const [error, setError] = useState(false);
 
   const getData = () =>
@@ -19,31 +19,18 @@ const Blog = () => {
 
   useEffect(() => getData(), []);
 
-  const postData = () => {
-    axios
-      .post("http://localhost:3004/articles", {
-        author: subAuthor.value,
-        content: formContent,
-        date: Date.now(),
-      })
-      .then((response) => {
-        console.log(response.data);
-        // Traitez la réponse ici
-      })
-      .catch((error) => {
-        console.error(error);
-        // Gérez l'erreur ici
-      });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (formContent.length < 100) {
       setError(true);
     } else {
+      axios.post("http://localhost:3004/articles", {
+        author,
+        content,
+        date: Date.now(),
+      });
       setError(false);
-      postData();
     }
   };
 
@@ -53,7 +40,12 @@ const Blog = () => {
       <Navigation />
       <h1>Blog</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
-        <input type="text" placeholder="Nom" id="subAuthor" />
+        <input
+          type="text"
+          placeholder="Nom"
+          id="subAuthor"
+          onChange={(e) => setAuthor(e.target.value)}
+        />
         <textarea
           // style conditionnel
           style={{ border: error ? "1px solid red" : "1px solid #61dafb" }}
